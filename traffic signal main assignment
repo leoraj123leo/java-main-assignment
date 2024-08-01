@@ -1,0 +1,75 @@
+import java.util.*;
+
+class LightControl {
+    String locationId;
+    int activeDuration;
+    int cautionDuration;
+    int inactiveDuration;
+    int elapsedTime;
+
+    LightControl(String locationId, int active, int caution, int inactive) {
+        this.locationId = locationId;
+        this.activeDuration = active;
+        this.cautionDuration = caution;
+        this.inactiveDuration = inactive;
+        this.elapsedTime = 0;
+    }
+
+    void cycleLights() {
+        elapsedTime++;
+        if (elapsedTime % (activeDuration + cautionDuration + inactiveDuration) < activeDuration) {
+            System.out.println(locationId + " is Green");
+        } else if (elapsedTime % (activeDuration + cautionDuration + inactiveDuration) < activeDuration + cautionDuration) {
+            System.out.println(locationId + " is Yellow");
+        } else {
+            System.out.println(locationId + " is Red");
+        }
+    }
+}
+
+class TrafficInfo {
+    int count;
+    int averageSpeed;
+
+    TrafficInfo(int count, int averageSpeed) {
+        this.count = count;
+        this.averageSpeed = averageSpeed;
+    }
+}
+
+class SignalManager {
+    List<LightControl> lightControls;
+
+    SignalManager(List<LightControl> lightControls) {
+        this.lightControls = lightControls;
+    }
+
+    void adjustLights(TrafficInfo info) {
+        for (LightControl control : lightControls) {
+            if (info.count > 50) {
+                control.activeDuration = 60;
+                control.inactiveDuration = 30;
+            } else {
+                control.activeDuration = 30;
+                control.inactiveDuration = 60;
+            }
+            control.cycleLights();
+        }
+    }
+}
+
+public class TrafficSystem {
+    public static void main(String[] args) {
+        List<LightControl> lightControls = new ArrayList<>();
+        lightControls.add(new LightControl("Intersection1", 30, 5, 60));
+        lightControls.add(new LightControl("Intersection2", 30, 5, 60));
+
+        SignalManager manager = new SignalManager(lightControls);
+
+        TrafficInfo info1 = new TrafficInfo(55, 40);
+        manager.adjustLights(info1);
+
+        TrafficInfo info2 = new TrafficInfo(30, 30);
+        manager.adjustLights(info2);
+    }
+}
